@@ -208,7 +208,6 @@ int main()
       .pickedUp = 0,
   };
 
-
   struct marker markers[] = {marker1, marker2};
 
   int nMarkers = sizeof(markers) / sizeof(markers[0]);
@@ -315,14 +314,8 @@ int main()
 
       for (int i = 0; i <= nMarkers; i++)
       {
-        if (markers[i].pickedUp == 0)
-        {
-          printf("marker at %d, %d\n", markers[i].x, markers[i].y);
-        }
-        printf("bot at %d, %d\n", bot.x, bot.y);
         if (bot.x == markers[i].x && bot.y == markers[i].y && markers[i].pickedUp == 0)
         {
-          printf("Picked up marker at %d, %d\n", bot.x, bot.y);
           bot.carryingMarker = 1;
           markers[i].pickedUp = 1;
         }

@@ -9,6 +9,7 @@ struct marker
 {
   int x;
   int y;
+  int pickedUp;
 };
 
 enum direction
@@ -36,7 +37,6 @@ struct robot
   enum direction facing;
   void (*traversalFunction)(struct robot *robot);
   void (*forward)(struct robot *robot, char grid[10][10]);
-  void (*right)(struct robot *robot);
 };
 
 // the forward function describes the robot's movement in the direction it is facing
@@ -46,7 +46,6 @@ void forward(struct robot *robot, char grid[10][10])
 {
   int x = robot->x;
   int y = robot->y;
-  char prev = grid[x][y];
 
   // advance in the direction the robot is facing
   switch (robot->facing)
@@ -68,46 +67,11 @@ void forward(struct robot *robot, char grid[10][10])
     break;
   }
 
-  // update grid, if there was a home here before, replace it
-  if (robot->homeX == x && robot->homeY == y)
-  {
-    strcpy(&grid[x][y], "H");
-  }
-  else if (strcmp(&prev, "M") == 0)
-  {
-    strcpy(&grid[x][y], "M");
-  }
-  else
-  {
-    strcpy(&grid[x][y], "N");
-  }
-
+  strcpy(&grid[robot->homeX][robot->homeY], "H");
   strcpy(&grid[robot->x][robot->y], "R");
-
+  strcpy(&grid[x][y], "N");
+  printf("Robot moved to %d, %d\n", robot->x, robot->y);
   sleep(200);
-}
-
-void right(struct robot *robot)
-{
-  // turn right
-  switch (robot->facing)
-  {
-  case Top:
-    robot->facing = Right;
-    break;
-  case Bottom:
-    robot->facing = Left;
-    break;
-  case Right:
-    robot->facing = Bottom;
-    break;
-  case Left:
-    robot->facing = Top;
-    break;
-  default:
-    printf("Error in right function");
-    break;
-  }
 }
 
 int atHome(struct robot *robot)
@@ -122,39 +86,40 @@ int atHome(struct robot *robot)
   }
 }
 
-void printGrid(char grid[10][10], struct robot robot)
+void printGrid(char grid[10][10], struct robot *robot)
 {
   for (int i = 0; i < 10; i++)
   {
     for (int j = 0; j < 10; j++)
     {
       {
-        // print the row
+        if (i == robot->x && j == robot->y) // if the cell contains the robot
 
-        if (grid[i][j] == 'N') // if the grid is empty
         {
-          setColour(white);
-        }
-
-        else if (grid[i][j] == 'R') // if the grid contains the robot
-        {
-          if (robot.carryingMarker)
+          if (robot->carryingMarker)
           {
             setColour(green);
           }
-
           else
           {
             setColour(yellow);
           }
         }
-        else if (grid[i][j] == 'H') // if the grid contains the home
+
+        else if (i == robot->homeY && j == robot->homeX) // if the cell contains the robot's home
+
         {
           setColour(red);
         }
-        else if (grid[i][j] == 'M') // if the grid contains a marker
+
+        else if (grid[i][j] == 'M') // if the cell contains a marker
         {
           setColour(blue);
+        }
+
+        else
+        {
+          setColour(white);
         }
 
         fillRect(i * 20, j * 20, 20, 20);
@@ -176,15 +141,12 @@ int directionToInt(enum direction dir)
     return 0;
     break;
   case Bottom:
-
     return 1;
     break;
   case Right:
-
     return 2;
     break;
   case Left:
-
     return 3;
     break;
   default:
@@ -193,9 +155,25 @@ int directionToInt(enum direction dir)
   }
 }
 
+void traverse(struct robot *r, char grid[10][10])
+{
+  enum direction dir = r->x % 2 == 0 ? Bottom : Top;
+  int canMove = dir == Top ? r->y > 0 : r->y < 9;
+  if (canMove)
+  {
+    r->facing = dir;
+    r->forward(r, grid);
+  }
+  else
+  {
+    // we turn right to the next column
+    r->facing = Right;
+    r->forward(r, grid);
+  }
+}
 int main()
 {
-  // use this to make a virtual grid to keep account of the colours to use in the forward function
+  // use this to make a virtual grid to keep account of the colours to use in the printGrid function
   char grid[10][10] = {
       {'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N'},
       {'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N'},
@@ -217,21 +195,23 @@ int main()
       .homeX = 0,
       .homeY = 0,
       .carryingMarker = 0,
-      .facing = Right,
+      .facing = Bottom,
       .forward = forward,
-      .right = right,
+
   };
 
   // initialize the marker
 
   struct marker marker1 = {
-      .x = 5,
-      .y = 5,
+      .x = 0,
+      .y = 3,
+      .pickedUp = 0,
   };
 
   struct marker marker2 = {
-      .x = 5,
-      .y = 0,
+      .x = 0,
+      .y = 5,
+      .pickedUp = 0,
   };
 
   struct marker markers[] = {marker1, marker2};
@@ -245,12 +225,6 @@ int main()
 
   strcpy(&grid[bot.x][bot.y], "R");
   strcpy(&grid[bot.homeX][bot.homeY], "H");
-
-  struct Game game = {
-      .nMarkers = nMarkers,
-      .markers = markers,
-      .grid = grid,
-  };
 
   // we can't trivialy store enum values in an array
   // -1 - empty
@@ -269,17 +243,18 @@ int main()
     history[i] = -1;
   }
 
-  while (game.nMarkers > 0)
+  while (nMarkers > 0)
   {
+    printGrid(grid, &bot);
+
     // if the robot is at home and not carrying a marker, go pick one up
-    int hasMarker = bot.carryingMarker;
-    if (hasMarker)
+    if (bot.carryingMarker)
     {
-      // go home using homeX and homeY and robot x, y
+      printf("Carrying marker\n");
       if (atHome(&bot))
       {
         bot.carryingMarker = 0;
-        game.nMarkers--;
+        nMarkers--;
       }
       else
       {
@@ -306,73 +281,49 @@ int main()
             break;
           }
           bot.forward(&bot, grid);
+          printGrid(grid, &bot);
 
           // clear the history entry
           history[i] = -1;
-          printGrid(grid, bot);
         }
       }
     }
 
     else
     {
-      // check if there is a marker in the current position
-      int markerHere = 0;
+      printf("Not carrying marker\n");
+      traverse(&bot, grid);
+      printGrid(grid, &bot);
+
+      // Check if the robot is on a marker
 
       for (int i = 0; i < nMarkers; i++)
       {
-        if (bot.x == markers[i].x && bot.y == markers[i].y)
+        if (bot.x == markers[i].x && bot.y == markers[i].y && markers[i].pickedUp == 0)
         {
-          markerHere = 1;
+          markers[i].pickedUp = 1;
           bot.carryingMarker = 1;
-          grid[markers[i].x][markers[i].y] = 'N';
-          markers[i].x = -1;
           break;
         }
       }
 
-      // if there isn't we keep traversing the grid
-
-      if (markerHere == 0)
+      // Add the direction the robot is facing to the history
+      int i;
+      for (i = 0; i < MAX_HISTORY_SIZE; i++)
       {
-        // check if the robot is facing a wall
-        int canMoveForward =
-            (bot.facing == Top && bot.y > 0) ||
-                    (bot.facing == Bottom && bot.y < 9) ||
-                    (bot.facing == Right && bot.x < 9) ||
-                    (bot.facing == Left && bot.x > 0)
-                ? 1
-                : 0;
-
-        if (canMoveForward)
+        if (history[i] == -1)
         {
-          bot.forward(&bot, grid);
-
-          // Add the direction the robot is facing to the history
-
-          int i;
-          for (i = 0; i < MAX_HISTORY_SIZE; i++)
-          {
-            if (history[i] == -1)
-            {
-              history[i] = directionToInt(bot.facing);
-              break;
-            }
-          }
-          // Check if the history array is full
-          if (i == MAX_HISTORY_SIZE)
-          {
-            // Shift the history array to remove the oldest entry
-            memmove(&history[0], &history[1], (MAX_HISTORY_SIZE - 1) * sizeof(int));
-            // Add the new entry at the end
-            history[MAX_HISTORY_SIZE - 1] = directionToInt(bot.facing);
-          }
-          printGrid(grid, bot);
+          history[i] = directionToInt(bot.facing);
+          break;
         }
-        else
-        {
-          bot.right(&bot);
-        }
+      }
+      // Check if the history array is full
+      if (i == MAX_HISTORY_SIZE)
+      {
+        // Shift the history array to remove the oldest entry
+        memmove(&history[0], &history[1], (MAX_HISTORY_SIZE - 1) * sizeof(int));
+        // Add the new entry at the end
+        history[MAX_HISTORY_SIZE - 1] = directionToInt(bot.facing);
       }
     }
   }

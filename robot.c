@@ -5,6 +5,9 @@
 #include "graphics.h"
 #include <string.h>
 
+// on windows, use the following line
+// #include <Windows.h>
+
 struct marker
 {
   int x;
@@ -18,13 +21,6 @@ enum direction
   Bottom,
   Right,
   Left
-};
-
-struct Game
-{
-  int nMarkers;
-  struct marker *markers;
-  char grid[10][10];
 };
 
 struct robot
@@ -70,8 +66,6 @@ void forward(struct robot *robot, char grid[10][10])
   strcpy(&grid[robot->homeX][robot->homeY], "H");
   strcpy(&grid[robot->x][robot->y], "R");
   strcpy(&grid[x][y], "N");
-  printf("Robot moved to %d, %d\n", robot->x, robot->y);
-  sleep(200);
 }
 
 int atHome(struct robot *robot)
@@ -209,10 +203,11 @@ int main()
   };
 
   struct marker marker2 = {
-      .x = 0,
-      .y = 5,
+      .x = 4,
+      .y = 4,
       .pickedUp = 0,
   };
+
 
   struct marker markers[] = {marker1, marker2};
 
@@ -250,7 +245,6 @@ int main()
     // if the robot is at home and not carrying a marker, go pick one up
     if (bot.carryingMarker)
     {
-      printf("Carrying marker\n");
       if (atHome(&bot))
       {
         bot.carryingMarker = 0;
@@ -259,53 +253,44 @@ int main()
       else
       {
         // use the history to go home
-        for (int i = 0; i < MAX_HISTORY_SIZE && history[i] != -1; i++)
+        // get last entry in history that is not -1
+        int i;
+        enum direction dir;
+        for (i = MAX_HISTORY_SIZE - 1; i >= 0; i--)
         {
-          int dir = directionToInt(bot.facing);
-          switch (history[i])
-          // here we invert the direction the robot is facing to go home
+          if (history[i] != -1)
           {
-          case 0:
-            bot.facing = Bottom;
-            break;
-          case 1:
-            bot.facing = Top;
-            break;
-          case 2:
-            bot.facing = Left;
-            break;
-          case 3:
-            bot.facing = Right;
-            break;
-          default:
+            switch (history[i])
+            {
+            case 0:
+              dir = Bottom;
+              break;
+            case 1:
+              dir = Top;
+              break;
+            case 2:
+              dir = Left;
+              break;
+            case 3:
+              dir = Right;
+              break;
+            default:
+              break;
+            }
+
+            bot.facing = dir;
+            bot.forward(&bot, grid);
+            history[i] = -1;
             break;
           }
-          bot.forward(&bot, grid);
-          printGrid(grid, &bot);
-
-          // clear the history entry
-          history[i] = -1;
         }
       }
     }
 
     else
     {
-      printf("Not carrying marker\n");
       traverse(&bot, grid);
       printGrid(grid, &bot);
-
-      // Check if the robot is on a marker
-
-      for (int i = 0; i < nMarkers; i++)
-      {
-        if (bot.x == markers[i].x && bot.y == markers[i].y && markers[i].pickedUp == 0)
-        {
-          markers[i].pickedUp = 1;
-          bot.carryingMarker = 1;
-          break;
-        }
-      }
 
       // Add the direction the robot is facing to the history
       int i;
@@ -325,7 +310,25 @@ int main()
         // Add the new entry at the end
         history[MAX_HISTORY_SIZE - 1] = directionToInt(bot.facing);
       }
+
+      // Check if the robot is on a marker
+
+      for (int i = 0; i <= nMarkers; i++)
+      {
+        if (markers[i].pickedUp == 0)
+        {
+          printf("marker at %d, %d\n", markers[i].x, markers[i].y);
+        }
+        printf("bot at %d, %d\n", bot.x, bot.y);
+        if (bot.x == markers[i].x && bot.y == markers[i].y && markers[i].pickedUp == 0)
+        {
+          printf("Picked up marker at %d, %d\n", bot.x, bot.y);
+          bot.carryingMarker = 1;
+          markers[i].pickedUp = 1;
+        }
+      }
     }
+    sleep(100);
   }
   return 0;
 }

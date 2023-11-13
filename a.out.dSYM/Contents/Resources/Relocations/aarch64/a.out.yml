@@ -1,0 +1,31 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     a.out
+relocations:
+  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: _drawLine, symObjAddr: 0x0, symBinAddr: 0x100002DD8, symSize: 0x68 }
+  - { offsetInCU: 0xA3, offset: 0xA3, size: 0x8, addend: 0x0, symName: _drawLine, symObjAddr: 0x0, symBinAddr: 0x100002DD8, symSize: 0x68 }
+  - { offsetInCU: 0xF1, offset: 0xF1, size: 0x8, addend: 0x0, symName: _drawRect, symObjAddr: 0x68, symBinAddr: 0x100002E40, symSize: 0x68 }
+  - { offsetInCU: 0x13F, offset: 0x13F, size: 0x8, addend: 0x0, symName: _fillRect, symObjAddr: 0xD0, symBinAddr: 0x100002EA8, symSize: 0x68 }
+  - { offsetInCU: 0x18D, offset: 0x18D, size: 0x8, addend: 0x0, symName: _drawOval, symObjAddr: 0x138, symBinAddr: 0x100002F10, symSize: 0x68 }
+  - { offsetInCU: 0x1DB, offset: 0x1DB, size: 0x8, addend: 0x0, symName: _fillOval, symObjAddr: 0x1A0, symBinAddr: 0x100002F78, symSize: 0x68 }
+  - { offsetInCU: 0x229, offset: 0x229, size: 0x8, addend: 0x0, symName: _drawArc, symObjAddr: 0x208, symBinAddr: 0x100002FE0, symSize: 0x88 }
+  - { offsetInCU: 0x293, offset: 0x293, size: 0x8, addend: 0x0, symName: _fillArc, symObjAddr: 0x290, symBinAddr: 0x100003068, symSize: 0x88 }
+  - { offsetInCU: 0x2FD, offset: 0x2FD, size: 0x8, addend: 0x0, symName: _drawPolygon, symObjAddr: 0x318, symBinAddr: 0x1000030F0, symSize: 0xC4 }
+  - { offsetInCU: 0x359, offset: 0x359, size: 0x8, addend: 0x0, symName: _fillPolygon, symObjAddr: 0x3DC, symBinAddr: 0x1000031B4, symSize: 0xC4 }
+  - { offsetInCU: 0x3B5, offset: 0x3B5, size: 0x8, addend: 0x0, symName: _drawString, symObjAddr: 0x4A0, symBinAddr: 0x100003278, symSize: 0x54 }
+  - { offsetInCU: 0x3F5, offset: 0x3F5, size: 0x8, addend: 0x0, symName: _displayImage, symObjAddr: 0x4F4, symBinAddr: 0x1000032CC, symSize: 0x54 }
+  - { offsetInCU: 0x435, offset: 0x435, size: 0x8, addend: 0x0, symName: _setColour, symObjAddr: 0x548, symBinAddr: 0x100003320, symSize: 0x138 }
+  - { offsetInCU: 0x467, offset: 0x467, size: 0x8, addend: 0x0, symName: _setRGBColour, symObjAddr: 0x6B4, symBinAddr: 0x10000348C, symSize: 0x58 }
+  - { offsetInCU: 0x4A7, offset: 0x4A7, size: 0x8, addend: 0x0, symName: _clear, symObjAddr: 0x70C, symBinAddr: 0x1000034E4, symSize: 0x1C }
+  - { offsetInCU: 0x4BC, offset: 0x4BC, size: 0x8, addend: 0x0, symName: _setWindowSize, symObjAddr: 0x728, symBinAddr: 0x100003500, symSize: 0x48 }
+  - { offsetInCU: 0x4EE, offset: 0x4EE, size: 0x8, addend: 0x0, symName: _sleep, symObjAddr: 0x770, symBinAddr: 0x100003548, symSize: 0x38 }
+  - { offsetInCU: 0x512, offset: 0x512, size: 0x8, addend: 0x0, symName: _foreground, symObjAddr: 0x7A8, symBinAddr: 0x100003580, symSize: 0x1C }
+  - { offsetInCU: 0x527, offset: 0x527, size: 0x8, addend: 0x0, symName: _background, symObjAddr: 0x7C4, symBinAddr: 0x10000359C, symSize: 0x1C }
+  - { offsetInCU: 0x26, offset: 0x57E, size: 0x8, addend: 0x0, symName: _forward, symObjAddr: 0x0, symBinAddr: 0x1000035B8, symSize: 0x138 }
+  - { offsetInCU: 0x6D, offset: 0x5C5, size: 0x8, addend: 0x0, symName: _forward, symObjAddr: 0x0, symBinAddr: 0x1000035B8, symSize: 0x138 }
+  - { offsetInCU: 0xBB, offset: 0x613, size: 0x8, addend: 0x0, symName: _left, symObjAddr: 0x148, symBinAddr: 0x100003700, symSize: 0xA0 }
+  - { offsetInCU: 0xDF, offset: 0x637, size: 0x8, addend: 0x0, symName: _right, symObjAddr: 0x1F8, symBinAddr: 0x1000037B0, symSize: 0xA0 }
+  - { offsetInCU: 0x103, offset: 0x65B, size: 0x8, addend: 0x0, symName: _atHome, symObjAddr: 0x2A8, symBinAddr: 0x100003860, symSize: 0x68 }
+  - { offsetInCU: 0x12B, offset: 0x683, size: 0x8, addend: 0x0, symName: _printGrid, symObjAddr: 0x310, symBinAddr: 0x1000038C8, symSize: 0x22C }
+  - { offsetInCU: 0x196, offset: 0x6EE, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x53C, symBinAddr: 0x100003AF4, symSize: 0x258 }
+...

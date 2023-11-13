@@ -1,0 +1,10 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/darenpalmer/Desktop/UCL/CS/principles_programming/cw-1/robot'
+relocations:
+  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: _onMarker, symObjAddr: 0x0, symBinAddr: 0x100003BCC, symSize: 0x6C }
+  - { offsetInCU: 0x41, offset: 0x41, size: 0x8, addend: 0x0, symName: _onMarker, symObjAddr: 0x0, symBinAddr: 0x100003BCC, symSize: 0x6C }
+  - { offsetInCU: 0x77, offset: 0x77, size: 0x8, addend: 0x0, symName: _printBoard, symObjAddr: 0x6C, symBinAddr: 0x100003C38, symSize: 0x110 }
+  - { offsetInCU: 0xD3, offset: 0xD3, size: 0x8, addend: 0x0, symName: _move, symObjAddr: 0x17C, symBinAddr: 0x100003D48, symSize: 0x30 }
+  - { offsetInCU: 0x113, offset: 0x113, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x1AC, symBinAddr: 0x100003D78, symSize: 0x188 }
+...

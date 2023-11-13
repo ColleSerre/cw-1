@@ -1,0 +1,7 @@
+{
+  "files.associations": {
+    "*.dart": "dart",
+    "*.js": "javascript",
+    "graphics.h": "c"
+  }
+}
